@@ -1,22 +1,33 @@
-# Welcome to your Lovable project
+# VRT3X | Operational Integrity Platform
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+VRT3X is a high-trust, institutional-grade operational integrity platform for Skilled Nursing Facilities. Built with a cyber-security terminal aesthetic, VRT3X provides real-time operational intelligence, regulatory compliance tracking, and revenue optimization.
+
+## Core Features
+
+### Three-Pillar Architecture (VRT3X Nodes)
+
+1. **Node 1: Capture (The Sucker)** - Live staffing stream automation
+2. **Node 2: Defense (The Shield)** - Good Faith Effort documentation and audit trails
+3. **Node 3: Profit (The Bridge)** - PDPM Revenue Audit and optimization
+
+### Key Capabilities
+
+- Real-time facility attention scoring
+- Automated staffing data capture via Chrome extension
+- Regulatory defense memo generation with integrity hashing
+- Revenue leakage detection (acuity/billing mismatches)
+- Multi-facility portfolio management
+- Legal safe harbor compliance tracking
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -62,12 +73,15 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Build the project and deploy to your preferred hosting platform:
 
-## Can I connect a custom domain to my Lovable project?
+```sh
+npm run build
+```
 
-Yes, you can!
+## Project Structure
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- `src/` - Source code
+- `extension/` - Chrome extension for data capture
+- `supabase/migrations/` - Database migrations
+- `tests/` - Test files

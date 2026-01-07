@@ -1,5 +1,5 @@
 import React from 'react';
-import { getScoreCategory } from '@/data/facilityData';
+import { getScoreCategory } from '@/lib/logic/scoring';
 import { cn } from '@/lib/utils';
 
 interface AttentionBadgeProps {

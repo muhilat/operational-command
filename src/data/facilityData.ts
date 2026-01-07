@@ -1,8 +1,13 @@
-// Mock facility data for TraceLayer SNF
+// Mock facility data for VRT3X
+// NOTE: This interface is kept for backward compatibility.
+// In production, use the Facility type from @/types/snf
+import type { Facility, IncidentSignal } from '@/types/snf';
+
 export interface FacilityData {
   id: string;
   name: string;
   attentionScore: number;
+  confidence?: 'high' | 'medium' | 'low';
   primaryStressSignal: string;
   stressCategory: 'staffing' | 'acuity' | 'compliance' | 'communication';
   staffingTrend: number[]; // 7-day scheduled vs actual ratio (1 = perfect, <1 = understaffed)
@@ -27,6 +32,7 @@ export interface FacilityData {
     donNotified: boolean;
     lastMemoDate: string | null;
   };
+  incidentSignals?: IncidentSignal[];
 }
 
 export const facilities: FacilityData[] = [
@@ -435,11 +441,8 @@ export const getFacilityById = (id: string): FacilityData | undefined => {
   return facilities.find(f => f.id === id);
 };
 
-export const getScoreCategory = (score: number): 'critical' | 'warning' | 'stable' => {
-  if (score >= 80) return 'critical';
-  if (score >= 50) return 'warning';
-  return 'stable';
-};
+// Re-export getScoreCategory from scoring logic for backward compatibility
+export { getScoreCategory } from '@/lib/logic/scoring';
 
 export const getActionStatusLabel = (status: FacilityData['actionStatus']): string => {
   const labels: Record<FacilityData['actionStatus'], string> = {

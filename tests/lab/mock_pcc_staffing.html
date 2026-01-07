@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PointClickCare - Daily Staffing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .census-info {
+            background-color: #ecf0f1;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+        #staffing_grid {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #staffing_grid th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        #staffing_grid td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        #staffing_grid tr:hover {
+            background-color: #f8f9fa;
+        }
+        .role-header {
+            background-color: #ecf0f1 !important;
+            font-weight: bold;
+        }
+        .numeric {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-ok { background-color: #27ae60; }
+        .status-warning { background-color: #f39c12; }
+        .status-critical { background-color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>PointClickCare - Daily Staffing Report</h1>
+        <p>Facility: Oakhaven Manor | Date: January 6, 2025</p>
+    </div>
+
+    <div class="census-info" id="census_display">
+        <strong>Current Census:</strong> <span id="census_count">142</span> residents
+    </div>
+
+    <table id="staffing_grid">
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th>Employee Name</th>
+                <th>Scheduled Hours</th>
+                <th>Actual Hours</th>
+                <th>Variance</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- RN Section -->
+            <tr class="role-header">
+                <td colspan="6"><strong>Registered Nurse (RN)</strong></td>
+            </tr>
+            <tr>
+                <td>RN</td>
+                <td>Sarah Johnson</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">0.0</td>
+                <td><span class="status-indicator status-ok"></span>On Schedule</td>
+            </tr>
+            <tr>
+                <td>RN</td>
+                <td>Michael Chen</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">0.0</td>
+                <td><span class="status-indicator status-ok"></span>On Schedule</td>
+            </tr>
+            <tr>
+                <td>RN</td>
+                <td>Emily Rodriguez</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">6.0</td>
+                <td class="numeric">-2.0</td>
+                <td><span class="status-indicator status-warning"></span>Short</td>
+            </tr>
+            <tr>
+                <td><strong>RN Total</strong></td>
+                <td></td>
+                <td class="numeric"><strong>24.0</strong></td>
+                <td class="numeric"><strong>22.0</strong></td>
+                <td class="numeric"><strong>-2.0</strong></td>
+                <td></td>
+            </tr>
+
+            <!-- LPN Section -->
+            <tr class="role-header">
+                <td colspan="6"><strong>Licensed Practical Nurse (LPN)</strong></td>
+            </tr>
+            <tr>
+                <td>LPN</td>
+                <td>David Williams</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">0.0</td>
+                <td><span class="status-indicator status-ok"></span>On Schedule</td>
+            </tr>
+            <tr>
+                <td>LPN</td>
+                <td>Jennifer Martinez</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">7.5</td>
+                <td class="numeric">-0.5</td>
+                <td><span class="status-indicator status-ok"></span>On Schedule</td>
+            </tr>
+            <tr>
+                <td>LPN</td>
+                <td>Robert Taylor</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">0.0</td>
+                <td><span class="status-indicator status-ok"></span>On Schedule</td>
+            </tr>
+            <tr>
+                <td>LPN</td>
+                <td>Lisa Anderson</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">6.5</td>
+                <td class="numeric">-1.5</td>
+                <td><span class="status-indicator status-warning"></span>Short</td>
+            </tr>
+            <tr>
+                <td><strong>LPN Total</strong></td>
+                <td></td>
+                <td class="numeric"><strong>32.0</strong></td>
+                <td class="numeric"><strong>30.0</strong></td>
+                <td class="numeric"><strong>-2.0</strong></td>
+                <td></td>
+            </tr>
+
+            <!-- CNA Section -->
+            <tr class="role-header">
+                <td colspan="6"><strong>Certified Nursing Assistant (CNA)</strong></td>
+            </tr>
+            <tr>
+                <td>CNA</td>
+                <td>James Brown</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">0.0</td>
+                <td><span class="status-indicator status-ok"></span>On Schedule</td>
+            </tr>
+            <tr>
+                <td>CNA</td>
+                <td>Patricia Davis</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">0.0</td>
+                <td><span class="status-indicator status-ok"></span>On Schedule</td>
+            </tr>
+            <tr>
+                <td>CNA</td>
+                <td>Christopher Wilson</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">7.0</td>
+                <td class="numeric">-1.0</td>
+                <td><span class="status-indicator status-warning"></span>Short</td>
+            </tr>
+            <tr>
+                <td>CNA</td>
+                <td>Amanda Moore</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">0.0</td>
+                <td><span class="status-indicator status-ok"></span>On Schedule</td>
+            </tr>
+            <tr>
+                <td>CNA</td>
+                <td>Daniel Jackson</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">6.0</td>
+                <td class="numeric">-2.0</td>
+                <td><span class="status-indicator status-warning"></span>Short</td>
+            </tr>
+            <tr>
+                <td>CNA</td>
+                <td>Michelle White</td>
+                <td class="numeric">8.0</td>
+                <td class="numeric">7.0</td>
+                <td class="numeric">-1.0</td>
+                <td><span class="status-indicator status-warning"></span>Short</td>
+            </tr>
+            <tr>
+                <td><strong>CNA Total</strong></td>
+                <td></td>
+                <td class="numeric"><strong>48.0</strong></td>
+                <td class="numeric"><strong>44.0</strong></td>
+                <td class="numeric"><strong>-4.0</strong></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107;">
+        <strong>Note:</strong> This is a mock PointClickCare staffing page for testing the TraceLayer SNF scraper extension.
+        Open the browser console (F12) to see the scraped data output.
+    </div>
+
+    <script>
+        // Simulate dynamic content loading (like real PointClickCare)
+        setTimeout(() => {
+            console.log('[Mock PCC] Page fully loaded');
+        }, 500);
+    </script>
+</body>
+</html>
+

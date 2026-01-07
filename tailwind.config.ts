@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        vrt3x: ['Geist Mono', 'JetBrains Mono', 'monospace'],
       },
       fontSize: {
         'xxs': ['10px', { lineHeight: '14px' }],
@@ -54,7 +55,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // TraceLayer semantic colors
+        // VRT3X brand colors - Metallic palette
+        'vrt3x-dark': '#020617',      // Deep Obsidian
+        'vrt3x-accent': '#94a3b8',    // Metallic Silver
+        'vrt3x-highlight': '#22d3ee', // Cyber Cyan
+        'vrt3x-muted': '#64748b',     // Slate
+        // VRT3X semantic colors
         critical: {
           DEFAULT: "hsl(var(--critical))",
           foreground: "hsl(var(--critical-foreground))",

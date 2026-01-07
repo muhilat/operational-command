@@ -8,6 +8,7 @@ import {
   Layers
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 
 const navItems = [
   { 
@@ -46,13 +47,28 @@ export const AppSidebar: React.FC = () => {
     <aside className="w-56 bg-sidebar border-r border-sidebar-border flex flex-col h-screen sticky top-0">
       {/* Logo */}
       <div className="px-4 py-5 border-b border-sidebar-border">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-            <Layers className="w-4 h-4 text-primary" />
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <BrandLogo size="md" />
+            {/* Green glowing dot - Regulatory Shield Active */}
+            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5">
+              <div className="w-full h-full rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)] animate-pulse"></div>
+              <div className="absolute inset-0 rounded-full bg-emerald-400 opacity-50 animate-ping"></div>
+            </div>
           </div>
-          <div>
-            <div className="font-semibold text-sm text-foreground tracking-tight">TraceLayer</div>
-            <div className="text-xxs text-muted-foreground uppercase tracking-wider">SNF Operations</div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <div className="font-bold font-vrt3x text-sm text-foreground tracking-widest">
+                VRT<span className="text-cyan-400">3</span>X
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <div className="text-xxs text-muted-foreground uppercase tracking-wider">SNF Operations</div>
+            </div>
+            <div className="flex items-center gap-1.5 mt-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.6)]"></div>
+              <span className="text-[8px] text-muted-foreground/70 leading-none">Regulatory Shield Active</span>
+            </div>
           </div>
         </div>
       </div>

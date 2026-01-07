@@ -2,83 +2,86 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TraceLayer SNF - Operational Intelligence Command Center
-   Bloomberg Terminal / Palantir aesthetic: Dense, dark, professional */
+/* VRT3X - Operational Integrity Platform
+   High-Trust, Institutional, Cyber-Security aesthetic */
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* Core surfaces - deep slate */
-    --background: 222 47% 6%;
-    --foreground: 210 20% 90%;
+    /* Core surfaces - VRT3X dark (#020617) near black */
+    --background: 222 60% 4%;
+    --foreground: 210 20% 92%;
 
-    --card: 222 47% 8%;
-    --card-foreground: 210 20% 90%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 20% 92%;
 
-    --popover: 222 47% 10%;
-    --popover-foreground: 210 20% 90%;
+    --popover: 222 47% 13%;
+    --popover-foreground: 210 20% 92%;
 
-    /* Primary - muted steel blue */
-    --primary: 210 40% 50%;
+    /* Primary - VRT3X dark (#020617) near black */
+    --primary: 222 60% 4%;
     --primary-foreground: 210 20% 98%;
 
-    /* Secondary - subtle elevation */
-    --secondary: 222 30% 12%;
-    --secondary-foreground: 210 20% 85%;
+    /* Secondary - slate gray elevation */
+    --secondary: 215 16% 14%;
+    --secondary-foreground: 210 20% 88%;
 
-    --muted: 222 30% 15%;
-    --muted-foreground: 215 15% 55%;
+    /* Muted - VRT3X muted (#64748b) slate */
+    --muted: 215 13% 47%;
+    --muted-foreground: 215 15% 58%;
 
-    --accent: 222 30% 18%;
-    --accent-foreground: 210 20% 90%;
+    /* Accent - VRT3X Metallic Silver (#94a3b8) */
+    --accent: 215 16% 73%;
+    --accent-foreground: 222 60% 4%;
 
-    /* Semantic colors */
+    /* Semantic colors - muted, professional */
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 30% 18%;
-    --input: 222 30% 15%;
-    --ring: 210 40% 50%;
+    --border: 215 16% 18%;
+    --input: 215 16% 16%;
+    --ring: 215 16% 73%;
 
     --radius: 0.25rem;
 
-    /* TraceLayer custom tokens */
-    --critical: 0 84% 60%;
+    /* VRT3X custom tokens - professional palette */
+    --critical: 0 84% 58%;
     --critical-foreground: 0 0% 100%;
     
-    --warning: 38 92% 50%;
+    --warning: 38 85% 48%;
     --warning-foreground: 0 0% 10%;
     
-    --stable: 220 13% 46%;
+    --stable: 215 13% 50%;
     --stable-foreground: 0 0% 100%;
     
-    --revenue: 142 71% 45%;
+    --revenue: 142 65% 42%;
     --revenue-foreground: 0 0% 100%;
     
-    --info: 199 89% 48%;
+    --info: 215 25% 45%;
     --info-foreground: 0 0% 100%;
 
-    /* Surface hierarchy */
-    --surface-0: 222 47% 6%;
-    --surface-1: 222 47% 8%;
-    --surface-2: 222 30% 12%;
-    --surface-3: 222 30% 16%;
+    /* Surface hierarchy - VRT3X dark scale */
+    --surface-0: 222 60% 4%;
+    --surface-1: 222 60% 6%;
+    --surface-2: 215 16% 10%;
+    --surface-3: 215 16% 14%;
 
-    /* Sidebar */
-    --sidebar-background: 222 47% 5%;
-    --sidebar-foreground: 210 20% 70%;
-    --sidebar-primary: 210 40% 50%;
+    /* Sidebar - VRT3X dark */
+    --sidebar-background: 222 60% 3%;
+    --sidebar-foreground: 210 20% 75%;
+    --sidebar-primary: 215 16% 73%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 30% 12%;
-    --sidebar-accent-foreground: 210 20% 90%;
-    --sidebar-border: 222 30% 15%;
-    --sidebar-ring: 210 40% 50%;
+    --sidebar-accent: 215 16% 10%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 215 16% 12%;
+    --sidebar-ring: 215 16% 73%;
   }
 
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 20% 90%;
+    --background: 222 60% 4%;
+    --foreground: 210 20% 92%;
   }
 }
 
@@ -91,6 +94,11 @@
     font-family: 'Inter', system-ui, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     -webkit-font-smoothing: antialiased;
+  }
+
+  .font-vrt3x {
+    font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
   }
 
   body {
