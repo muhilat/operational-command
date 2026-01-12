@@ -78,6 +78,19 @@ class SupabaseService {
   }
 
   /**
+   * Deserialize MitigationEvent from localStorage JSON
+   * Converts timestamp string back to Date object
+   */
+  private deserializeMitigationEvent(event: any): MitigationEvent {
+    return {
+      ...event,
+      timestamp: event.timestamp instanceof Date 
+        ? event.timestamp 
+        : new Date(event.timestamp),
+    };
+  }
+
+  /**
    * Get mitigation events for a facility
    */
   async getMitigationEvents(facilityId: string): Promise<MitigationEvent[]> {
@@ -92,8 +105,149 @@ class SupabaseService {
 
     // For now, read from localStorage
     const stored = localStorage.getItem('mitigation_events') || '[]';
-    const events: MitigationEvent[] = JSON.parse(stored);
-    return events.filter(e => e.facilityId === facilityId);
+    const events: any[] = JSON.parse(stored);
+    return events
+      .map(e => this.deserializeMitigationEvent(e))
+      .filter(e => e.facilityId === facilityId);
+  }
+
+  /**
+   * Get all mitigation events (for Liability Defense page)
+   */
+  async getAllMitigationEvents(): Promise<MitigationEvent[]> {
+    // In production:
+    // const { data, error } = await supabase
+    //   .from('mitigation_events')
+    //   .order('timestamp', { ascending: false });
+    // 
+    // if (error) throw error;
+    // return data || [];
+
+    // For now, read from localStorage
+    const stored = localStorage.getItem('mitigation_events') || '[]';
+    const events: any[] = JSON.parse(stored);
+    return events
+      .map(e => this.deserializeMitigationEvent(e))
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }
+
+  /**
+   * Download PDF from Supabase Storage
+   */
+  async downloadPDF(storagePath: string): Promise<Blob | null> {
+    // In production:
+    // const { data, error } = await supabase
+    //   .storage
+    //   .from('defense-vault')
+    //   .download(storagePath);
+    // 
+    // if (error) {
+    //   console.error('[Supabase] Storage download error:', error);
+    //   throw error;
+    // }
+    // 
+    // return data;
+
+    // For now, return null (PDFs stored in localStorage metadata only)
+    console.log('[Supabase] PDF download requested for:', storagePath);
+    return null;
+  }
+
+  /**
+   * Update a mitigation event record
+   * Used to link PDF storage path after upload
+   */
+  async updateMitigationEvent(
+    eventId: string,
+    updates: Partial<Pick<MitigationEvent, 'evidencePayload' | 'auditReferenceId'>>
+  ): Promise<MitigationEvent> {
+    // In production:
+    // const { data, error } = await supabase
+    //   .from('mitigation_events')
+    //   .update(updates)
+    //   .eq('id', eventId)
+    //   .select()
+    //   .single();
+    // 
+    // if (error) throw error;
+    // return data;
+
+    // For now, update in localStorage
+    const stored = localStorage.getItem('mitigation_events') || '[]';
+    const events: any[] = JSON.parse(stored);
+    const eventIndex = events.findIndex(e => e.id === eventId);
+    
+    if (eventIndex === -1) {
+      throw new Error(`Mitigation event not found: ${eventId}`);
+    }
+
+    events[eventIndex] = {
+      ...events[eventIndex],
+      ...updates,
+    };
+
+    localStorage.setItem('mitigation_events', JSON.stringify(events));
+    console.log('[Supabase] Updated mitigation event:', events[eventIndex]);
+
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    return this.deserializeMitigationEvent(events[eventIndex]);
+  }
+
+  /**
+   * Upload file to Supabase Storage bucket
+   * 
+   * @param bucketName - Storage bucket name (e.g., 'defense-vault')
+   * @param filePath - Path within bucket (e.g., 'facility-id/event-id.pdf')
+   * @param fileBlob - File blob to upload
+   * @param contentType - MIME type (e.g., 'application/pdf')
+   * @returns Storage path if successful, null otherwise
+   */
+  async uploadFile(
+    bucketName: string,
+    filePath: string,
+    fileBlob: Blob,
+    contentType: string
+  ): Promise<string | null> {
+    // In production, this would be:
+    // const { data, error } = await supabase
+    //   .storage
+    //   .from(bucketName)
+    //   .upload(filePath, fileBlob, {
+    //     contentType,
+    //     upsert: false, // Don't overwrite existing files
+    //   });
+    // 
+    // if (error) {
+    //   console.error('[Supabase] Storage upload error:', error);
+    //   throw error;
+    // }
+    // 
+    // return data.path;
+
+    // For now, simulate upload (store metadata in localStorage)
+    const storageKey = `storage_${bucketName}_${filePath}`;
+    const fileMetadata = {
+      bucket: bucketName,
+      path: filePath,
+      contentType,
+      size: fileBlob.size,
+      uploadedAt: new Date().toISOString(),
+    };
+
+    // Store metadata (in production, the actual file would be in Supabase Storage)
+    const stored = localStorage.getItem('storage_uploads') || '{}';
+    const uploads: Record<string, typeof fileMetadata> = JSON.parse(stored);
+    uploads[storageKey] = fileMetadata;
+    localStorage.setItem('storage_uploads', JSON.stringify(uploads));
+
+    console.log('[Supabase] Uploaded file to storage:', fileMetadata);
+
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    return filePath;
   }
 
   /**

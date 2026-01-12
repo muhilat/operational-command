@@ -263,3 +263,6 @@ Once testing is complete:
 2. The extension will work on real PointClickCare pages when you have access
 3. You can modify the mock HTML to test different scenarios
 
+
+
+

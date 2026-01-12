@@ -74,3 +74,6 @@ COMMENT ON COLUMN mitigation_events.action_taken IS 'Human-readable description 
 COMMENT ON COLUMN mitigation_events.evidence_payload IS 'JSONB object containing evidence (screenshots, logs, call records, etc.)';
 COMMENT ON COLUMN mitigation_events.audit_reference_id IS 'Unique reference ID included in generated PDF footer for audit trail linkage';
 
+
+
+

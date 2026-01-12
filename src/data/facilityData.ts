@@ -24,7 +24,7 @@ export interface FacilityData {
     observedAcuity: 'LOW' | 'STANDARD' | 'HIGH' | 'CRITICAL';
     billingStatus: 'LOW' | 'STANDARD' | 'HIGH' | 'CRITICAL';
     dailyMismatch: number;
-    recommendation: string;
+    // Removed: recommendation field (legal safe-harbor - no prescriptive language)
   };
   defensibility: {
     agencyCallsDocumented: boolean;
@@ -68,7 +68,6 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'HIGH',
       billingStatus: 'STANDARD',
       dailyMismatch: 1850,
-      recommendation: 'Mismatch detected. Estimated $1,850/day in uncaptured NTA reimbursement. Recommend MDS Review.',
     },
     defensibility: {
       agencyCallsDocumented: true,
@@ -108,7 +107,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'CRITICAL',
       billingStatus: 'HIGH',
       dailyMismatch: 2340,
-      recommendation: 'Significant acuity drift. Estimated $2,340/day potential. Immediate MDS reassessment required.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: {
       agencyCallsDocumented: true,
@@ -148,7 +147,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'HIGH',
       billingStatus: 'STANDARD',
       dailyMismatch: 920,
-      recommendation: 'Data gap preventing accurate assessment. Immediate facility contact required.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: {
       agencyCallsDocumented: false,
@@ -177,7 +176,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'LOW',
       dailyMismatch: 650,
-      recommendation: 'Minor billing discrepancy. Schedule routine MDS review.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: false, lastMemoDate: '2024-01-05' },
   },
@@ -200,7 +199,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'STANDARD',
       dailyMismatch: 420,
-      recommendation: 'Stable billing alignment. Monitor for changes.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: false, donNotified: true, lastMemoDate: '2024-01-04' },
   },
@@ -223,7 +222,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'HIGH',
       billingStatus: 'STANDARD',
       dailyMismatch: 780,
-      recommendation: 'Pending MDS reviews may unlock additional reimbursement.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: true, lastMemoDate: '2024-01-03' },
   },
@@ -246,7 +245,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'STANDARD',
       dailyMismatch: 320,
-      recommendation: 'Billing aligned. Focus on reducing agency dependency.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: true, lastMemoDate: '2024-01-06' },
   },
@@ -270,7 +269,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'STANDARD',
       dailyMismatch: 180,
-      recommendation: 'Minor optimization opportunity. Low priority.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: true, lastMemoDate: '2024-01-05' },
   },
@@ -293,7 +292,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'STANDARD',
       dailyMismatch: 95,
-      recommendation: 'Fully optimized. No action required.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: true, lastMemoDate: '2024-01-06' },
   },
@@ -316,7 +315,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'STANDARD',
       dailyMismatch: 50,
-      recommendation: 'Exemplary operations. Consider as model facility.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: true, lastMemoDate: '2024-01-06' },
   },
@@ -339,7 +338,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'STANDARD',
       dailyMismatch: 0,
-      recommendation: 'Perfect billing alignment. No action required.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: true, lastMemoDate: '2024-01-06' },
   },
@@ -362,7 +361,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'STANDARD',
       dailyMismatch: 0,
-      recommendation: 'Top performer in region.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: true, lastMemoDate: '2024-01-06' },
   },
@@ -385,7 +384,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'LOW',
       dailyMismatch: 540,
-      recommendation: 'Moderate billing gap. Schedule MDS review.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: false, donNotified: true, lastMemoDate: '2024-01-04' },
   },
@@ -408,7 +407,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'STANDARD',
       dailyMismatch: 120,
-      recommendation: 'Minor optimization available. Low priority.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: true, lastMemoDate: '2024-01-05' },
   },
@@ -431,7 +430,7 @@ export const facilities: FacilityData[] = [
       observedAcuity: 'STANDARD',
       billingStatus: 'STANDARD',
       dailyMismatch: 0,
-      recommendation: 'Regional benchmark facility.',
+      // Removed: recommendation (legal safe-harbor)
     },
     defensibility: { agencyCallsDocumented: true, floatPoolOffered: true, donNotified: true, lastMemoDate: '2024-01-06' },
   },
@@ -440,9 +439,6 @@ export const facilities: FacilityData[] = [
 export const getFacilityById = (id: string): FacilityData | undefined => {
   return facilities.find(f => f.id === id);
 };
-
-// Re-export getScoreCategory from scoring logic for backward compatibility
-export { getScoreCategory } from '@/lib/logic/scoring';
 
 export const getActionStatusLabel = (status: FacilityData['actionStatus']): string => {
   const labels: Record<FacilityData['actionStatus'], string> = {

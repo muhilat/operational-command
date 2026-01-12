@@ -1,19 +1,59 @@
 /**
- * TraceLayer SNF - Background Service Worker
+ * VRT3X - Background Service Worker
  * 
- * Handles messages from content script and manages data sync.
+ * Handles messages from content script and manages data sync to production API.
  */
+
+const API_ENDPOINT = 'https://vrt3x.com/api/staffing-data';
+
+/**
+ * Send staffing data to production API
+ */
+async function sendToAPI(data) {
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('[VRT3X] Data sent to API successfully:', result);
+    
+    // Update last sync time in storage (for sync status indicator)
+    chrome.storage.local.set({ 'last_sync_timestamp': Date.now() });
+    
+    // Note: The web app will need to poll the API or use WebSocket to get sync status
+    // For now, sync status is managed via localStorage in the web app
+    
+    return result;
+  } catch (error) {
+    console.error('[VRT3X] Error sending data to API:', error);
+    throw error;
+  }
+}
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'STAFFING_DATA_CAPTURED') {
-    console.log('[TraceLayer] Received staffing data:', message.data);
+    console.log('[VRT3X] Received staffing data:', message.data);
     
-    // Here you could:
-    // 1. Send to backend API
-    // 2. Aggregate data
-    // 3. Trigger alerts
+    // Send to production API
+    sendToAPI(message.data)
+      .then(() => {
+        sendResponse({ success: true });
+      })
+      .catch((error) => {
+        console.error('[VRT3X] Failed to send data:', error);
+        sendResponse({ success: false, error: error.message });
+      });
     
-    sendResponse({ success: true });
+    return true; // Keep message channel open for async response
   }
   
   return true; // Keep message channel open for async response

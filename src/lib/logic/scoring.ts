@@ -277,12 +277,40 @@ export function calculateAttentionScore(facility: Facility): AttentionScoreResul
 }
 
 /**
- * Get score category for UI display
+ * Get qualitative intensity label (replaces numeric scores)
+ * Philosophy: No false authority from numbers
  */
-export function getScoreCategory(score: number): 'critical' | 'warning' | 'stable' {
-  if (score >= 80) return 'critical';
-  if (score >= 50) return 'warning';
-  return 'stable';
+export function getIntensityLabel(score: number): 'Low' | 'Elevated' | 'Critical' {
+  if (score >= 80) return 'Critical';
+  if (score >= 50) return 'Elevated';
+  return 'Low';
+}
+
+/**
+ * Generate system observation from facility data
+ * Philosophy: Observations, not recommendations or directives
+ */
+export function generateSystemObservation(
+  facility: Facility,
+  stressCategory: 'staffing' | 'acuity' | 'compliance' | 'communication'
+): string {
+  if (stressCategory === 'staffing') {
+    const rnGap = facility.staffingDetails.rn[0]?.scheduled - facility.staffingDetails.rn[0]?.actual || 0;
+    if (rnGap > 0) {
+      return `Observation: Staffing hours deviate from census requirements. RN actual hours are ${rnGap} below scheduled.`;
+    }
+    return `Observation: Staffing levels align with scheduled requirements.`;
+  }
+  
+  if (stressCategory === 'acuity') {
+    const acuityMismatch = facility.revenueDetails.observedAcuity !== facility.revenueDetails.billingStatus;
+    if (acuityMismatch) {
+      return `Observation: Observed clinical acuity (${facility.revenueDetails.observedAcuity}) differs from billing status (${facility.revenueDetails.billingStatus}).`;
+    }
+    return `Observation: Acuity levels align with billing status.`;
+  }
+  
+  return `Observation: Operational signals within expected parameters.`;
 }
 
 /**
@@ -389,16 +417,21 @@ export interface RevenueLeakResult {
 /**
  * Calculate Revenue Leak - Detects under-billing opportunities
  * 
- * LOGIC: If census is high but actual staffing hours are < scheduled by more than 10%,
- * the facility is likely under-billing for the complexity of care they're providing.
+ * LOGIC: 
+ * 1. If census shows High Acuity residents but staffing is at minimum → $200/day billing gap
+ * 2. If census is high but actual staffing hours are < scheduled by more than 10% → PDPM opportunity
  * 
  * @param staffingRecords - Array of staffing records (RN, LPN, CNA)
  * @param census - Current resident census count
+ * @param observedAcuity - Observed clinical acuity level from census/scraped data
+ * @param minimumStaffingThreshold - Minimum staffing hours per resident (default: 2.5 hours/resident)
  * @returns RevenueLeakResult with detection status and opportunity amount
  */
 export function calculateRevenueLeak(
   staffingRecords: StaffingRecord[],
-  census?: number
+  census?: number,
+  observedAcuity?: AcuityLevel,
+  minimumStaffingThreshold: number = 2.5
 ): RevenueLeakResult {
   // Default result - no leak detected
   const defaultResult: RevenueLeakResult = {
@@ -439,6 +472,25 @@ export function calculateRevenueLeak(
       ...defaultResult,
       description: 'No scheduled hours found - cannot calculate revenue opportunity',
     };
+  }
+
+  // PRIORITY CHECK: High Acuity + Minimum Staffing = $200/day billing gap
+  if (observedAcuity === 'HIGH' || observedAcuity === 'CRITICAL') {
+    // Calculate hours per resident
+    const hoursPerResident = totalActual / census;
+    
+    // Check if staffing is at or below minimum threshold
+    if (hoursPerResident <= minimumStaffingThreshold) {
+      // High Acuity residents with minimum staffing = billing gap
+      const dailyBillingGap = census * 200; // $200 per resident per day
+      
+      return {
+        detected: true,
+        dailyOpportunity: dailyBillingGap,
+        staffingGapPercentage: ((minimumStaffingThreshold - hoursPerResident) / minimumStaffingThreshold) * 100,
+        description: `High Acuity billing gap detected: ${census} High Acuity residents with minimum staffing (${hoursPerResident.toFixed(1)} hrs/resident). Estimated billing gap: $${dailyBillingGap.toLocaleString()}/day`,
+      };
+    }
   }
 
   // Calculate staffing gap percentage

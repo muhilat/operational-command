@@ -158,3 +158,6 @@ Make sure these files exist in the `extension/` directory:
 - ✅ `popup.html` - Extension popup UI
 - ✅ `popup.js` - Popup logic
 
+
+
+

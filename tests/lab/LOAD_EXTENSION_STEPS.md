@@ -136,3 +136,6 @@ When you open the mock HTML file and check the console, you should see:
 
 If you see this, the extension is working correctly! 🎉
 
+
+
+

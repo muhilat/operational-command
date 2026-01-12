@@ -87,3 +87,6 @@ npm run test:rls
 - **"Query error"**: Verify that the `mitigation_events` table exists and RLS is enabled
 - **Test passes but shouldn't**: Check your RLS policies in Supabase dashboard
 
+
+
+

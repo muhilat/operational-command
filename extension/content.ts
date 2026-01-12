@@ -1,10 +1,11 @@
 /**
- * TraceLayer SNF - The Sucker (Content Script)
+ * VRT3X - The Sucker (Content Script)
  * 
  * Automated data capture from PointClickCare staffing grids.
  * Uses MutationObserver to passively scrape DOM without waiting for APIs.
  * 
  * PRINCIPLE: Read-Only First - We ingest data via scraping; we never write to the EHR.
+ * All captured data is sent to production API at https://vrt3x.com
  */
 
 interface ScrapedStaffingData {
@@ -36,7 +37,7 @@ function extractNumber(text: string | null): number {
 function scrapeStaffingGrid(): ScrapedStaffingData | null {
   const grid = document.querySelector('#staffing_grid');
   if (!grid) {
-    console.log('[TraceLayer] Staffing grid not found');
+    console.log('[VRT3X] Staffing grid not found');
     return null;
   }
 
@@ -147,19 +148,19 @@ function scrapeStaffingGrid(): ScrapedStaffingData | null {
 
   // Validate we got some data
   if (data.rn.scheduled === 0 && data.cna.scheduled === 0) {
-    console.log('[TraceLayer] No staffing data found in grid');
+    console.log('[VRT3X] No staffing data found in grid');
     return null;
   }
 
   // Data Verification: Output final JSON object
-  console.log('[TraceLayer] ✅ Successfully scraped staffing data:');
+  console.log('[VRT3X] ✅ Successfully scraped staffing data:');
   console.log(JSON.stringify(data, null, 2));
   
   return data;
 }
 
 /**
- * Store scraped data in chrome.storage.local
+ * Store scraped data in chrome.storage.local and send to production API
  */
 async function storeScrapedData(data: ScrapedStaffingData): Promise<void> {
   try {
@@ -169,17 +170,18 @@ async function storeScrapedData(data: ScrapedStaffingData): Promise<void> {
     // Also store latest for quick access
     await chrome.storage.local.set({ 'latest_staffing': data });
     
-    console.log('[TraceLayer] Stored staffing data:', data);
+    console.log('[VRT3X] Stored staffing data:', data);
     
-    // Notify background script if needed
+    // Notify background script to send to production API
     chrome.runtime.sendMessage({
       type: 'STAFFING_DATA_CAPTURED',
       data,
     }).catch(() => {
       // Background script might not be ready, that's okay
+      console.warn('[VRT3X] Background script not ready, data stored locally');
     });
   } catch (error) {
-    console.error('[TraceLayer] Error storing data:', error);
+    console.error('[VRT3X] Error storing data:', error);
   }
 }
 
@@ -219,7 +221,7 @@ function initializeObserver(): void {
     attributes: false,
   });
 
-  console.log('[TraceLayer] MutationObserver initialized');
+  console.log('[VRT3X] MutationObserver initialized');
 }
 
 /**
@@ -235,11 +237,11 @@ function isStaffingPage(): boolean {
  */
 function init(): void {
   if (!isStaffingPage()) {
-    console.log('[TraceLayer] Not on staffing page, skipping');
+    console.log('[VRT3X] Not on staffing page, skipping');
     return;
   }
 
-  console.log('[TraceLayer] Initializing content script on:', window.location.href);
+  console.log('[VRT3X] Initializing content script on:', window.location.href);
 
   // Try immediate capture (in case page is already loaded)
   if (document.readyState === 'complete' || document.readyState === 'interactive') {

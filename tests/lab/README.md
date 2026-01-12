@@ -56,3 +56,6 @@ This directory contains the mock PointClickCare staffing page and setup instruct
 - The extension works on both `file://` URLs (for testing) and `*.pointclickcare.com` (production)
 - The scraper uses a fallback strategy: first tries to find "Total" rows, then sums individual rows if needed
 
+
+
+

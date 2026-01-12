@@ -80,7 +80,7 @@ export interface Facility {
     observedAcuity: AcuityLevel;
     billingStatus: AcuityLevel;
     dailyMismatch: number;
-    recommendation: string;
+    // Removed: recommendation field (legal safe-harbor - no prescriptive language)
   };
   /** Defensibility audit trail */
   defensibility: {
