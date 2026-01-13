@@ -2,56 +2,80 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>TraceLayer SNF</title>
   <style>
     body {
       width: 300px;
       padding: 16px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #020617;
+      color: #f1f5f9;
     }
-    h1 {
-      margin: 0 0 12px 0;
-      font-size: 16px;
-      font-weight: 600;
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 18px;
+      margin: 0;
+      color: #fbbf24;
     }
     .status {
-      padding: 8px;
-      border-radius: 4px;
+      padding: 12px;
+      border-radius: 8px;
       margin-bottom: 12px;
+      background: #1e293b;
+      border: 1px solid #334155;
     }
-    .status.active {
-      background: #10b98120;
-      color: #10b981;
+    .status.success {
+      border-color: #22c55e;
     }
-    .status.inactive {
-      background: #6b728020;
-      color: #6b7280;
+    .status.error {
+      border-color: #ef4444;
     }
-    button {
+    .status.warning {
+      border-color: #f59e0b;
+    }
+    .button {
       width: 100%;
-      padding: 8px;
-      background: #3b82f6;
-      color: white;
+      padding: 10px;
+      background: #334155;
+      color: #f1f5f9;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: 500;
+      font-size: 14px;
+      margin-top: 8px;
     }
-    button:hover {
-      background: #2563eb;
+    .button:hover {
+      background: #475569;
+    }
+    .button:active {
+      background: #64748b;
+    }
+    .info {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 8px;
     }
   </style>
 </head>
 <body>
-  <h1>TraceLayer SNF</h1>
-  <div id="status" class="status inactive">Checking...</div>
-  <button id="capture">Capture Current Page</button>
-  
+  <div class="header">
+    <h1>VRT3X Data Capture</h1>
+  </div>
+
+  <div id="status" class="status">
+    <div>Status: <span id="statusText">Checking...</span></div>
+    <div class="info" id="statusInfo"></div>
+  </div>
+
+  <button class="button" id="captureBtn">Capture Data Now</button>
+  <button class="button" id="retryBtn">Retry Failed Captures</button>
+
+  <div class="info" style="margin-top: 16px; text-align: center;">
+    Version 2.0.0
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
-
-
-
-

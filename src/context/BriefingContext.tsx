@@ -6,7 +6,7 @@
  * No local calculations allowed.
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import type { FacilityData } from '@/data/facilityData';
 import { calculateAttentionScore, getIntensityLabel } from '@/lib/logic/scoring';
 import { calculateRevenueLeak } from '@/lib/logic/scoring';
@@ -38,6 +38,7 @@ interface BriefingContextValue {
   error: string | null;
   updateSyncTimestamp: (facilityId: string, timestamp: Date) => void;
   updateRevenueDelta: (facilityId: string, delta: number) => void;
+  refresh: () => Promise<void>;
 }
 
 const BriefingContext = createContext<BriefingContextValue | undefined>(undefined);
@@ -457,6 +458,38 @@ export function BriefingProvider({ children }: BriefingProviderProps) {
     );
   };
   
+  // Refresh function - can be called after successful data ingestion
+  const refresh = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const { data, error: supabaseError } = await supabase
+        .from('facilities')
+        .select('*')
+        .order('name', { ascending: true });
+      
+      if (supabaseError) {
+        console.error('❌ BriefingContext: Supabase fetch error:', supabaseError);
+        throw supabaseError;
+      }
+      
+      // Transform Supabase data to FacilityData format
+      const transformedFacilities = (data || []).map(transformSupabaseToFacilityData);
+      
+      // Convert to canonical format
+      const canonical = transformedFacilities.map((facility, index) => createCanonicalFacility(facility, index));
+      
+      setCanonicalFacilities(canonical);
+    } catch (err) {
+      console.error('❌ BriefingContext: Error refreshing facilities:', err);
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      setCanonicalFacilities([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  
   return (
     <BriefingContext.Provider
       value={{
@@ -465,6 +498,7 @@ export function BriefingProvider({ children }: BriefingProviderProps) {
         error,
         updateSyncTimestamp,
         updateRevenueDelta,
+        refresh,
       }}
     >
       {children}

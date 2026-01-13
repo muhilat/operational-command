@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Test Facility - Staffing</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #333;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    .census-count {
+      font-size: 18px;
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #e8f4f8;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="facility-name">Oakhaven Manor</h1>
+  <div class="census-count">Census: 45</div>
+  
+  <table id="staffing_grid">
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th>Scheduled</th>
+        <th>Actual</th>
+        <th>Gap</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>RN Total</td>
+        <td>6</td>
+        <td>4</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>CNA Total</td>
+        <td>12</td>
+        <td>10</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>LPN Total</td>
+        <td>2</td>
+        <td>2</td>
+        <td>0</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 30px; padding: 15px; background-color: #fff3cd; border-radius: 4px;">
+    <strong>Testing Instructions:</strong>
+    <ol>
+      <li>Load the VRT3X extension in Chrome</li>
+      <li>Open this page</li>
+      <li>Wait 3 seconds - extension should auto-capture</li>
+      <li>Check browser console (F12) for capture logs</li>
+      <li>Check extension popup for status</li>
+      <li>Verify data in Supabase</li>
+    </ol>
+  </div>
+
+  <script>
+    // Simulate PointClickCare page structure
+    console.log('Test page loaded. Extension should capture data automatically.');
+  </script>
+</body>
+</html>
+
