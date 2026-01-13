@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
         setIsCalibrated(true);
       }
     } catch (error) {
-      console.error('[Dashboard] Error loading calibration:', error);
+      // Calibration load error - use defaults
     }
   }, []);
 
@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
     try {
       sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(answers));
     } catch (error) {
-      console.error('[Dashboard] Error saving calibration:', error);
+      // Calibration save error - non-critical
     }
   };
 
@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
     try {
       sessionStorage.removeItem(SESSION_STORAGE_KEY);
     } catch (error) {
-      console.error('[Dashboard] Error clearing calibration:', error);
+      // Calibration clear error - non-critical
     }
   };
 

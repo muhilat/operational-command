@@ -196,7 +196,7 @@ const FacilityDrillDown: React.FC = () => {
       setIsDialogOpen(false);
       setActionTaken('');
     } catch (error) {
-      console.error('[FacilityDrillDown] Error creating hashed memo:', error);
+      console.error('❌ FacilityDrillDown: Error creating hashed memo:', error);
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to create defense memo. Please try again.',

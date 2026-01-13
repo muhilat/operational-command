@@ -20,6 +20,7 @@ import { AlertTriangle, ChevronRight, Clock, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { getCardState, getCardStateStyles } from '@/lib/utils/cardState';
+import { LegalDisclaimer } from '@/components/LegalDisclaimer';
 import type { CalibrationAnswers } from './CalibrationHandshake';
 
 interface AttentionBriefProps {
@@ -257,6 +258,9 @@ export const AttentionBrief: React.FC<AttentionBriefProps> = ({ calibration }) =
             })
           )}
         </div>
+
+        {/* Legal Disclaimer */}
+        <LegalDisclaimer />
       </main>
     </div>
   );

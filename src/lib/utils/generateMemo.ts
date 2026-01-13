@@ -275,12 +275,12 @@ async function generateDefenseMemoPDF(params: {
   }
   yPosition += 6;
 
-  // SECTION 3: Mitigation Actions Taken
+  // SECTION 3: Mitigation Actions Documented
   checkPageBreak(40);
   doc.setFontSize(14);
   doc.setFont(undefined, 'bold');
   doc.setTextColor(0, 0, 0);
-  doc.text('Mitigation Actions Taken', margin, yPosition);
+  doc.text('Mitigation Actions Documented', margin, yPosition);
   yPosition += 8;
 
   doc.setFontSize(11);

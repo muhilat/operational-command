@@ -85,7 +85,7 @@ const LiabilityDefense: React.FC = () => {
           setMitigationEvents(events);
         }
       } catch (error) {
-        console.error('[LiabilityDefense] Error loading memo history:', error);
+        // Error logged silently - fallback to localStorage handled below
         
         if (!mounted) return; // Component unmounted, don't update state
 
@@ -188,8 +188,8 @@ const LiabilityDefense: React.FC = () => {
       setShowGenerateDialog(false);
       setSelectedFacilityId(null);
     } catch (error) {
-      console.error('[LiabilityDefense] Error generating memo:', error);
-      alert(`❌ Failed to generate memo: ${error instanceof Error ? error.message : 'Unknown error'}\n\nCheck console for details.`);
+      console.error('❌ LiabilityDefense: Failed to generate memo:', error);
+      alert(`❌ Failed to generate memo: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsGeneratingMemo(false);
     }
@@ -233,7 +233,7 @@ const LiabilityDefense: React.FC = () => {
         alert(`PDF download requested for: ${storagePath}\n\nIn production, this would download from Supabase Storage.`);
       }
     } catch (error) {
-      console.error('[LiabilityDefense] Error downloading PDF:', error);
+      console.error('❌ LiabilityDefense: Error downloading PDF:', error);
       alert('Error downloading PDF. Please try again.');
     } finally {
       const eventId = event?.id ?? 'unknown';

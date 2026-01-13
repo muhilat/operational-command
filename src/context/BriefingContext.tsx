@@ -399,8 +399,6 @@ export function BriefingProvider({ children }: BriefingProviderProps) {
         setLoading(true);
         setError(null);
         
-        console.log('🔍 BriefingContext: Fetching facilities from Supabase...');
-        
         const { data, error: supabaseError } = await supabase
           .from('facilities')
           .select('*')
@@ -409,22 +407,18 @@ export function BriefingProvider({ children }: BriefingProviderProps) {
         if (!mounted) return;
         
         if (supabaseError) {
-          console.error('❌ Supabase fetch error:', supabaseError);
+          console.error('❌ BriefingContext: Supabase fetch error:', supabaseError);
           throw supabaseError;
         }
         
         // Transform Supabase data to FacilityData format
         const transformedFacilities = (data || []).map(transformSupabaseToFacilityData);
         
-        console.log('✅ BriefingContext: Loaded from Supabase:', transformedFacilities.length, 'facilities');
-        console.log('✅ BriefingContext: First facility:', transformedFacilities[0]?.name || 'none');
-        
         // Convert to canonical format
         const canonical = transformedFacilities.map((facility, index) => createCanonicalFacility(facility, index));
         
         if (mounted) {
           setCanonicalFacilities(canonical);
-          console.log('✅ BriefingContext: Canonical facilities created:', canonical.length);
         }
       } catch (err) {
         console.error('❌ BriefingContext: Error fetching facilities:', err);

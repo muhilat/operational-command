@@ -37,7 +37,7 @@ const Settings: React.FC = () => {
         setObjective(parsed.objective);
       }
     } catch (error) {
-      console.error('[Settings] Error loading calibration:', error);
+      // Calibration load error - use defaults
     }
   }, []);
 
@@ -64,7 +64,7 @@ const Settings: React.FC = () => {
         window.location.href = '/';
       }, 1000);
     } catch (error) {
-      console.error('[Settings] Error saving calibration:', error);
+      console.error('❌ Settings: Error saving calibration:', error);
       toast({
         title: 'Error',
         description: 'Failed to save settings. Please try again.',
