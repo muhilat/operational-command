@@ -27,8 +27,12 @@ const App = () => (
             <Routes>
               <Route path="/" element={<ErrorBoundary><Dashboard /></ErrorBoundary>} />
               <Route path="/facility/:facilityId" element={<ErrorBoundary><FacilityDrillDown /></ErrorBoundary>} />
+              {/* Liability Defense routes (backward compatible) */}
               <Route path="/compliance" element={<ErrorBoundary><LiabilityDefense /></ErrorBoundary>} />
+              <Route path="/liability-defense" element={<ErrorBoundary><LiabilityDefense /></ErrorBoundary>} />
+              {/* Revenue Integrity routes (backward compatible) */}
               <Route path="/revenue" element={<ErrorBoundary><RevenueIntegrity /></ErrorBoundary>} />
+              <Route path="/revenue-integrity" element={<ErrorBoundary><RevenueIntegrity /></ErrorBoundary>} />
               <Route path="/settings" element={<ErrorBoundary><Settings /></ErrorBoundary>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />

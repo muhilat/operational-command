@@ -24,13 +24,13 @@ const navItems = [
   },
   { 
     title: 'Liability Defense', 
-    path: '/compliance', 
+    path: '/liability-defense', 
     icon: Shield,
     description: 'Regulatory documentation',
   },
   { 
     title: 'Revenue Integrity', 
-    path: '/revenue', 
+    path: '/revenue-integrity', 
     icon: DollarSign,
     description: 'PDPM capture analysis',
   },

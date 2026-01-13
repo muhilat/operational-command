@@ -12,6 +12,7 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { DollarSign, ArrowLeft, TrendingUp, Clock, Loader2, AlertCircle, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useBriefingContext } from '@/context/BriefingContext';
+import { LegalDisclaimer } from '@/components/LegalDisclaimer';
 import { formatDistanceToNow } from 'date-fns';
 import { getStaffingGap } from '@/lib/utils/defensiveGuards';
 import { isDataStale, getLastSyncTimestamp, isWaitingForSync } from '@/lib/api';
@@ -287,6 +288,9 @@ const RevenueIntegrity: React.FC = () => {
                 })}
               </div>
             )}
+
+            {/* Legal Disclaimer */}
+            <LegalDisclaimer />
           </div>
         </div>
       </main>

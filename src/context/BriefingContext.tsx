@@ -7,10 +7,10 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { facilities } from '@/data/facilityData';
 import type { FacilityData } from '@/data/facilityData';
 import { calculateAttentionScore, getIntensityLabel } from '@/lib/logic/scoring';
 import { calculateRevenueLeak } from '@/lib/logic/scoring';
+import { supabase } from '@/lib/supabase';
 
 export interface CanonicalFacility {
   id: string;
@@ -34,6 +34,8 @@ export interface CanonicalFacility {
 
 interface BriefingContextValue {
   facilities: CanonicalFacility[];
+  loading: boolean;
+  error: string | null;
   updateSyncTimestamp: (facilityId: string, timestamp: Date) => void;
   updateRevenueDelta: (facilityId: string, delta: number) => void;
 }
@@ -65,15 +67,49 @@ const SIGNAL_DICTIONARY = {
   'skeleton-crew': {
     name: 'Skeleton Crew Signal',
     observation: (gap: number) => `Observation: Staffing hours deviate from census requirements. RN actual hours are ${gap} below scheduled.`,
+    stateObservation: (facility: FacilityData) => {
+      // State-based: Observe the discrepancy, don't calculate perfect metrics
+      const census = facility.census || 0;
+      const rnScheduled = facility.staffingDetails?.rn?.[0]?.scheduled || 0;
+      const rnActual = facility.staffingDetails?.rn?.[0]?.actual || 0;
+      const cnaScheduled = facility.staffingDetails?.cna?.[0]?.scheduled || 0;
+      const cnaActual = facility.staffingDetails?.cna?.[0]?.actual || 0;
+      
+      // If we can't calculate, generate a state observation
+      if (census === 0 || (rnScheduled === 0 && cnaScheduled === 0)) {
+        return 'Observation: Staffing roster appears inconsistent with census requirements. Verification suggested.';
+      }
+      
+      // State observation: "40 residents but only 2 CNAs visible"
+      if (census > 0 && cnaActual < census / 10) {
+        return `Observation: Census shows ${census} residents but staffing roster shows ${cnaActual} CNA${cnaActual !== 1 ? 's' : ''} visible. State of stress detected.`;
+      }
+      
+      if (rnScheduled > 0 && rnActual < rnScheduled * 0.8) {
+        return `Observation: RN scheduled hours (${rnScheduled}h) exceed actual hours (${rnActual}h). Staffing roster appears inconsistent.`;
+      }
+      
+      return 'Observation: Staffing levels align with scheduled requirements.';
+    },
     calculation: (facility: FacilityData) => {
       // Safe-access pattern: Use optional chaining and nullish coalescing
-      const rnGap = facility.staffingDetails?.rn?.[0]?.scheduled - facility.staffingDetails?.rn?.[0]?.actual || 0;
+      const rnGap = (facility.staffingDetails?.rn?.[0]?.scheduled || 0) - (facility.staffingDetails?.rn?.[0]?.actual || 0);
       return rnGap > 0 ? { detected: true, gap: rnGap } : { detected: false, gap: 0 };
     },
   },
   'acuity-mismatch': {
     name: 'Acuity Mismatch',
     observation: (observed: string, billing: string) => `Observation: Observed clinical acuity (${observed}) differs from billing status (${billing}).`,
+    stateObservation: (facility: FacilityData) => {
+      const observed = facility.revenueDetails?.observedAcuity || 'STANDARD';
+      const billing = facility.revenueDetails?.billingStatus || 'STANDARD';
+      
+      if (observed !== billing) {
+        return `Observation: Observed clinical acuity (${observed}) differs from billing status (${billing}). Capture opportunity identified.`;
+      }
+      
+      return 'Observation: Acuity levels align with billing status.';
+    },
     calculation: (facility: FacilityData) => {
       // Safe-access pattern for billing calculations
       const observed = facility.revenueDetails?.observedAcuity || 'STANDARD';
@@ -85,6 +121,15 @@ const SIGNAL_DICTIONARY = {
   'safety-incident': {
     name: 'Safety Incident',
     observation: (incidentCount: number) => `Observation: ${incidentCount} safety incident${incidentCount !== 1 ? 's' : ''} detected requiring leadership attention.`,
+    stateObservation: (facility: FacilityData) => {
+      const incidentCount = facility.incidentSignals?.filter(s => s.type === 'compliance' || s.type === 'safety').length || 0;
+      
+      if (incidentCount > 0) {
+        return `Observation: ${incidentCount} safety incident${incidentCount !== 1 ? 's' : ''} detected requiring leadership attention.`;
+      }
+      
+      return 'Observation: Compliance signals within expected parameters.';
+    },
     calculation: (facility: FacilityData) => {
       // Safe-access pattern for safety/compliance calculations
       const incidentCount = facility.incidentSignals?.filter(s => s.type === 'compliance' || s.type === 'safety').length || 0;
@@ -92,6 +137,33 @@ const SIGNAL_DICTIONARY = {
     },
   },
 };
+
+/**
+ * Calculate Confidence Level based on data completeness
+ * High: All required fields present
+ * Med: Some fields missing but core data available
+ * Low: Critical fields missing or incomplete
+ */
+function calculateConfidence(facility: FacilityData): 'High' | 'Med' | 'Low' {
+  const hasCensus = (facility.census ?? 0) > 0;
+  const hasRnData = (facility.staffingDetails?.rn?.length ?? 0) > 0;
+  const hasCnaData = (facility.staffingDetails?.cna?.length ?? 0) > 0;
+  const hasAcuity = !!facility.revenueDetails?.observedAcuity;
+  const hasBilling = !!facility.revenueDetails?.billingStatus;
+  
+  // High confidence: Core data present
+  if (hasCensus && (hasRnData || hasCnaData) && hasAcuity && hasBilling) {
+    return 'High';
+  }
+  
+  // Med confidence: Some core data present
+  if (hasCensus && (hasRnData || hasCnaData)) {
+    return 'Med';
+  }
+  
+  // Low confidence: Critical fields missing
+  return 'Low';
+}
 
 /**
  * Standardized Revenue Calculation
@@ -267,10 +339,117 @@ function createCanonicalFacility(facilityData: FacilityData, index: number): Can
 }
 
 export function BriefingProvider({ children }: BriefingProviderProps) {
-  const [canonicalFacilities, setCanonicalFacilities] = useState<CanonicalFacility[]>(() => {
-    // Initialize canonical facilities from raw data
-    return facilities.map((facility, index) => createCanonicalFacility(facility, index));
-  });
+  const [canonicalFacilities, setCanonicalFacilities] = useState<CanonicalFacility[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Transform Supabase row to FacilityData format
+  const transformSupabaseToFacilityData = (supabaseRow: any): FacilityData => {
+    const staffing = supabaseRow.staffing || {};
+    const billing = supabaseRow.billing || {};
+    const safety = supabaseRow.safety || {};
+    const documentation = supabaseRow.documentation || {};
+    
+    // Calculate staffing gap
+    const gap = staffing.gap || (staffing.budgeted - staffing.scheduled) || 0;
+    
+    // Build staffing details array format expected by FacilityData
+    // Create default arrays based on gap if detailed data not available
+    const defaultRn = gap > 0 ? [{ scheduled: 6, actual: 6 - gap }] : [{ scheduled: 6, actual: 6 }];
+    const defaultCna = [{ scheduled: 12, actual: 12 }];
+    
+    return {
+      id: supabaseRow.id,
+      name: supabaseRow.name,
+      attentionScore: 0, // Will be calculated by createCanonicalFacility
+      primaryStressSignal: gap > 0 ? 'Staffing Gap Detected' : 'Operational Signal',
+      stressCategory: (gap > 0 ? 'staffing' : (billing.acuity !== billing.status ? 'acuity' : 'compliance')) as 'staffing' | 'acuity' | 'compliance' | 'communication',
+      staffingTrend: [1.0, 0.95, 0.90, 0.85, 0.80, 0.75, gap > 0 ? 0.70 : 0.75], // Default trend
+      uncapturedRevenue: gap > 0 ? (gap * (staffing.hourly_rate || 45) * (staffing.hours_affected || 8)) : 0,
+      actionStatus: gap > 0 ? 'defense-memo-needed' : 'audit-ready',
+      census: supabaseRow.census || 0,
+      staffingDetails: {
+        rn: defaultRn,
+        lpn: [],
+        cna: defaultCna,
+        alerts: gap > 0 ? [`Staffing gap of ${gap} positions detected`] : [],
+      },
+      revenueDetails: {
+        observedAcuity: (billing.acuity || 'STANDARD') as 'LOW' | 'STANDARD' | 'HIGH' | 'CRITICAL',
+        billingStatus: (billing.status || 'STANDARD') as 'LOW' | 'STANDARD' | 'HIGH' | 'CRITICAL',
+        dailyMismatch: gap > 0 ? (gap * (staffing.hourly_rate || 45) * (staffing.hours_affected || 8)) : 0,
+      },
+      defensibility: {
+        agencyCallsDocumented: documentation.agency_calls_documented !== false,
+        floatPoolOffered: documentation.float_pool_offered === true,
+        donNotified: documentation.don_notified === true,
+        lastMemoDate: documentation.last_memo_date || null,
+      },
+    };
+  };
+  
+  // Fetch facilities from Supabase
+  useEffect(() => {
+    let mounted = true;
+    
+    async function fetchFacilities() {
+      if (!mounted) return;
+      
+      try {
+        setLoading(true);
+        setError(null);
+        
+        console.log('🔍 BriefingContext: Fetching facilities from Supabase...');
+        
+        const { data, error: supabaseError } = await supabase
+          .from('facilities')
+          .select('*')
+          .order('name', { ascending: true });
+        
+        if (!mounted) return;
+        
+        if (supabaseError) {
+          console.error('❌ Supabase fetch error:', supabaseError);
+          throw supabaseError;
+        }
+        
+        // Transform Supabase data to FacilityData format
+        const transformedFacilities = (data || []).map(transformSupabaseToFacilityData);
+        
+        console.log('✅ BriefingContext: Loaded from Supabase:', transformedFacilities.length, 'facilities');
+        console.log('✅ BriefingContext: First facility:', transformedFacilities[0]?.name || 'none');
+        
+        // Convert to canonical format
+        const canonical = transformedFacilities.map((facility, index) => createCanonicalFacility(facility, index));
+        
+        if (mounted) {
+          setCanonicalFacilities(canonical);
+          console.log('✅ BriefingContext: Canonical facilities created:', canonical.length);
+        }
+      } catch (err) {
+        console.error('❌ BriefingContext: Error fetching facilities:', err);
+        if (mounted) {
+          setError(err instanceof Error ? err.message : 'Unknown error');
+          setCanonicalFacilities([]);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    }
+    
+    const loadFacilities = async () => {
+      if (!mounted) return;
+      await fetchFacilities();
+    };
+    
+    loadFacilities();
+    
+    return () => {
+      mounted = false;
+    };
+  }, []);
   
   const updateSyncTimestamp = (facilityId: string, timestamp: Date) => {
     setCanonicalFacilities(prev =>
@@ -288,6 +467,8 @@ export function BriefingProvider({ children }: BriefingProviderProps) {
     <BriefingContext.Provider
       value={{
         facilities: canonicalFacilities,
+        loading,
+        error,
         updateSyncTimestamp,
         updateRevenueDelta,
       }}

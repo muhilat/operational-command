@@ -90,7 +90,7 @@ const FacilityDrillDown: React.FC = () => {
   const revenueDelta = canonicalFacility.revenueDelta; // SSoT: Standardized $250/day calculation
   const isDataStale = (Date.now() - lastSync.getTime()) / (1000 * 60 * 60) > 4; // 4 hour threshold
   
-  // Causal Hierarchy: If Focus = 'Staffing', Node 1 must be visually primary
+  // Causal Hierarchy: If Focus = 'Staffing', Node 1 is visually primary
   const isStaffingFocus = calibration?.focusArea === 'staffing';
   const isCriticalSignal = intensity === 'Critical';
   
@@ -129,7 +129,7 @@ const FacilityDrillDown: React.FC = () => {
   /**
    * Create hashed defense memo with database handshake
    * 
-   * This implements "The Shield" - every operational failure must
+   * This implements "The Shield" - every operational failure is
    * be paired with documented mitigation efforts.
    * 
    * Workflow:
