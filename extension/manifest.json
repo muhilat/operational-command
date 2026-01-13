@@ -3,32 +3,30 @@
   "name": "VRT3X Data Capture",
   "version": "2.0.0",
   "description": "Automated staffing intelligence for skilled nursing facilities",
+  
   "permissions": [
-    "activeTab",
     "storage",
-    "alarms"
+    "alarms",
+    "activeTab"
   ],
+  
   "host_permissions": [
-    "*://*.pointclickcare.com/*",
-    "*://*.matrixcare.com/*",
-    "*://*.yardi.com/*",
-    "https://vrt3x.com/*",
-    "https://operational-command.vercel.app/*"
+    "<all_urls>"
   ],
+  
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
+  
   "content_scripts": [
     {
-      "matches": [
-        "*://*.pointclickcare.com/*",
-        "http://localhost:8000/*"
-      ],
+      "matches": ["<all_urls>"],
       "js": ["content-pointclickcare.js"],
       "run_at": "document_idle"
     }
   ],
+  
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -37,10 +35,10 @@
       "128": "icons/icon128.png"
     }
   },
+  
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   }
 }
-
